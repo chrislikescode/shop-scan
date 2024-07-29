@@ -30,3 +30,11 @@ model Session {
   collaborator  Boolean?  @default(false)
   emailVerified Boolean?  @default(false)
 }
+
+model Scan {
+  id               Int @id @default(autoincrement())
+  createdAt        DateTime @default(now())
+  name             String?
+  shop             String  
+  data             String 
+}

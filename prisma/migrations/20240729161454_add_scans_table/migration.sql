@@ -1,0 +1,8 @@
+-- CreateTable
+CREATE TABLE "Scan" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "name" TEXT,
+    "shop" TEXT NOT NULL,
+    "data" TEXT NOT NULL
+);
