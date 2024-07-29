@@ -20,3 +20,7 @@ primary_region = 'mia'
   memory = '1gb'
   cpu_kind = 'shared'
   cpus = 1
+
+[mounts]
+  source = "gls"
+  destination = "/db"

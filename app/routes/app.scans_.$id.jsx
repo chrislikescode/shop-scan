@@ -345,8 +345,6 @@ const AuditBlockFactory = ({auditData}) =>{
   )
 } 
 const AuditBlock = ({auditData}) => {
-
-
     // Accessing the title property without knowing the first key
     const auditKey = Object.keys(auditData);
     const auditTitle = auditData[auditKey].title;
