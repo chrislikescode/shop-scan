@@ -83,7 +83,6 @@ async function constructPageSpeedApiUrl(data) {
   const cleanedUrl = ensureHttps(url);
   const params = new URLSearchParams({url: cleanedUrl, key: process.env.GOOGLE_PAGE_SPEED_API_KEY});
 
-  console.log("Params", params);
   if (scanTypes) params.append("category", scanTypes);
   if (deviceStrategy) params.append("strategy", deviceStrategy);
 

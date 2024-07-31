@@ -2,11 +2,12 @@ import { authenticate } from "../shopify.server";
 import { useLoaderData, useNavigate} from "@remix-run/react";
 import { Page, Layout, Card, Text, Grid, 
     BlockStack, Button, InlineStack, DataTable, Box,Tooltip, Collapsible, InlineGrid } from '@shopify/polaris';
-// import '../styles.css';
 import { styled } from 'styled-components';
 import { getScanById } from "../models/Scans.server";
 import formatDate from "../util/formatdate";
 import { useState, useCallback } from "react";
+
+import FinalScore from "../components/FinalScore";
 
 export async function loader({ request, params }) {
     const {session} = await authenticate.admin(request);
@@ -15,6 +16,7 @@ export async function loader({ request, params }) {
     const scanData = await getScanById(shop, id);
     let parsedData = JSON.parse(scanData.data);
     let headerImage;
+    let finalScoresArray = Object.entries(parsedData.lighthouseResult.categories).map(([key, value]) => ({ [key]: value }));
 
     let scanKeyData = {
       "requestedUrl": parsedData.lighthouseResult.requestedUrl,
@@ -23,8 +25,12 @@ export async function loader({ request, params }) {
       "fetchTime": parsedData.lighthouseResult.fetchTime,
       "failedAuditsCount" : 0,
       "passedAuditsCount" : 0,
-      "nanAuditsCount" : 0
+      "nanAuditsCount" : 0,
+      "finalScores" : finalScoresArray[0],
+      "finalScoresKey" : Object.keys(finalScoresArray[0]),
+      "scanName" : scanData.name
     }
+    
     parsedData = parsedData.lighthouseResult.audits;
     
     parsedData = Object.entries(parsedData).map(([key, value]) => ({ [key]: value }));
@@ -155,7 +161,6 @@ const AuditDataTable = ({auditDetails}) => {
             let nodeKeys = Object.keys(auditDetails.items[i][headingKeys[x]]); 
 
             nodeKeys.forEach(nodeKey => { 
-              
               if(typeof auditDetails.items[i][headingKeys[x]][nodeKey] !== "object"){
                 dataRows.push([nodeKey, auditDetails.items[i][headingKeys[x]][nodeKey]]);
               }
@@ -250,20 +255,25 @@ const AuditBlockFactory = ({auditData}) =>{
 
     const auditBlocks = (
       <>
-      <BlockStack gap="1000">
+      <BlockStack gap="400">
+      
       {/* Failed Audits  */}
-        <InlineStack align="space-between">
-          <Text as="h2" tone="critical" variant="headingLg">
-            Failed Audits 
-          </Text>
-          <Button
-              onClick={handleFailedOpen}
-              ariaExpanded={openFailed}
-              ariaControls="failed-audits"
-            >
-              {openFailed ? "Close Failed Audits" : "View Failed Audits"}
-            </Button>
-        </InlineStack>
+      <Card>
+        <Box padding="200">
+          <InlineStack align="space-between">
+            <Text as="h2" tone="critical" variant="headingLg">
+              Failed Audits 
+            </Text>
+            <Button
+                onClick={handleFailedOpen}
+                ariaExpanded={openFailed}
+                ariaControls="failed-audits"
+              >
+                {openFailed ? "Close Failed Audits" : "View Failed Audits"}
+              </Button>
+          </InlineStack>
+        </Box>
+
         <Collapsible
             open={openFailed}
             id="failed-audits"
@@ -277,8 +287,10 @@ const AuditBlockFactory = ({auditData}) =>{
           </BlockStack>
 
         </Collapsible>
-
+      </Card>
 {/* Passed Audits */}
+      <Card>
+      <Box padding="200">
         <InlineStack align="space-between">
             <Text as="h2" tone="success" variant="headingLg">
               Passed Audits 
@@ -291,6 +303,7 @@ const AuditBlockFactory = ({auditData}) =>{
               {openPassed ? "Close Passed Audits" : "View Passed Audits"}
             </Button>
         </InlineStack>
+        </Box>
         <Collapsible
             open={openPassed}
             id="passed-audits"
@@ -303,8 +316,11 @@ const AuditBlockFactory = ({auditData}) =>{
             ))}
           </BlockStack>
         </Collapsible>
+      </Card>
 
 {/* NAN Audits */}
+      <Card>
+      <Box padding="200">
 
         <InlineStack align="space-between">
           <Text as="h2" tone="" variant="headingLg">
@@ -318,6 +334,7 @@ const AuditBlockFactory = ({auditData}) =>{
             {openNan ? "Close NaN Audits" : "View Nan Audits"}
           </Button>
         </InlineStack>
+        </Box>
       
         <Collapsible
           open={openNan}
@@ -331,9 +348,10 @@ const AuditBlockFactory = ({auditData}) =>{
               ))}
           </BlockStack>
         </Collapsible>
+      </Card>
       </BlockStack>
 
-
+      <Box minHeight="50px"></Box>
 
       </>
     );
@@ -573,51 +591,13 @@ export default function Scan() {
             <Layout>
                 <Layout.Section>
                     <BlockStack gap="500">
-                      <InlineGrid gap="400" columns={3}>
-                        <Card>
-                           <BlockStack inlineAlign="center">
-                              <Text variant="heading3xl" as="h2" tone="success">
-                              {scanKeyData.passedAuditsCount} 
-                              </Text>
-                              <Text variant="" as="h2" tone="success">
-                              Passed Audits
-                              </Text>
-                            </BlockStack>
-                        </Card>
-                        <Card>
-                        <BlockStack inlineAlign="center">
-                              <Text variant="heading3xl" as="h2" tone="critical">
-                              {scanKeyData.failedAuditsCount} 
-                              </Text>
-                              <Text variant="" as="h2" tone="critical">
-                              Failed Audits
-                              </Text>
-                            </BlockStack>
-                        </Card>
-                        <Card>
-                        <BlockStack inlineAlign="center">
-                              <Text variant="heading3xl" as="h2" tone="">
-                              {scanKeyData.nanAuditsCount} 
-                              </Text>
-                              <Text variant="" as="h2" tone="">
-                              Audits not Applicable
-                              </Text>
-                            </BlockStack>
-                        </Card>
-                      </InlineGrid>
-                      <Grid>
-                        {/* header doesnt exist for every scan type */}
+                    <Text variant="heading2xl" tone="subdued" as="h1"> {scanKeyData.scanName} </Text>
 
-                        {
-                            headerImage ? 
-                            <Grid.Cell columnSpan={{xs: 6, sm: 3, md: 6, lg: 6, xl: 6}}>
-                                <Card title="Screenshot of Website" sectioned>
-                                    <img src={headerImage} />
-                                </Card>
-                            </Grid.Cell>
-                            : 
-                            <></>
-                        }
+                   
+                      <Grid>
+                        <Grid.Cell columnSpan={{xs: 6, sm: 3, md: 6, lg: 6, xl: 6}}>
+                          <FinalScore score={scanKeyData.finalScores[scanKeyData.finalScoresKey].score * 100} />
+                        </Grid.Cell>
 
                         <Grid.Cell columnSpan={{xs: 6, sm: 6, md: 6, lg: 6 , xl: 6}}> 
                           <Card title="Past Scan Details" sectioned>
@@ -643,14 +623,14 @@ export default function Scan() {
                                 After any redirects or page actions
                               </Text>
                             </Box>
-                            <Box paddingBlock="200">
+                            {/* <Box paddingBlock="200">
                               <Text variant="headingMd" as="h3">
                                 User Agent                         
                               </Text>
                               <Text variant="" as="h3">
                                 {scanKeyData.userAgent}                              
                               </Text>
-                            </Box>
+                            </Box> */}
                             <Box paddingBlock="200">
                               <Text variant="headingMd" as="h3">
                                 Fetch Time                         
@@ -660,8 +640,41 @@ export default function Scan() {
                               </Text>
                             </Box>
                           </Card>
-                        </Grid.Cell>
-                      </Grid>              
+                        </Grid.Cell>      
+                      </Grid>       
+
+                        <InlineGrid gap="400" columns={3}>
+                          <Card>
+                            <BlockStack inlineAlign="center">
+                                <Text variant="heading2xl" as="h2" tone="success">
+                                {scanKeyData.passedAuditsCount} 
+                                </Text>
+                                <Text variant="" as="h2" tone="success">
+                                Passed Audits
+                                </Text>
+                              </BlockStack>
+                          </Card>
+                          <Card>
+                            <BlockStack inlineAlign="center">
+                                <Text variant="heading2xl" as="h2" tone="critical">
+                                {scanKeyData.failedAuditsCount} 
+                                </Text>
+                                <Text variant="" as="h2" tone="critical">
+                                Failed Audits
+                                </Text>
+                            </BlockStack>
+                          </Card>
+                          <Card>
+                            <BlockStack inlineAlign="center">
+                              <Text variant="heading2xl" as="h2" tone="">
+                              {scanKeyData.nanAuditsCount} 
+                              </Text>
+                              <Text variant="" as="h2" tone="">
+                              Audits not Applicable
+                              </Text>
+                            </BlockStack>
+                          </Card>
+                        </InlineGrid>       
                       <AuditBlockFactory auditData={parsedData} />
                     </BlockStack>
                 </Layout.Section>

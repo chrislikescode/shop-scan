@@ -23,9 +23,24 @@ import {
  import { runScan } from "../models/Scans.server";
  
 export async function loader({ request }) {
-  const { session } = await authenticate.admin(request);
+  const { session,admin } = await authenticate.admin(request);
   const {shop} = session;
-  return json({ shopUrl: shop});
+
+  const response = await admin.graphql(
+    `#graphql
+    query {
+      shop {
+        domains {
+          id
+          host
+          url
+        }
+      }
+    }`,
+  );
+  
+  const shopDomains = await response.json();
+  return json({shopDomains});
 }
 
 export async function action({ request }) {
@@ -46,7 +61,8 @@ export default function NewScanForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const loaderData = useLoaderData();
-  const shopURL = loaderData.shopUrl;
+  const shopDomains = loaderData.shopDomains.data.shop.domains;
+
   
   const [formState, setFormState] = useState({
     url: '',
@@ -59,15 +75,28 @@ export default function NewScanForm() {
 
   const submit = useSubmit();
 
+  function checkErrors() {
+    let errors = {};
+   
+
+    return errors;
+
+  }
+
+
   function handleRun() {
 
+    let errors = checkErrors();
     setIsSubmitting(true);
+
     const data = { 
-      url: shopURL,
+      url: formState.url || shopDomains[0],
       scanTypes: formState.scanTypes || [],
       deviceStrategy: formState.deviceStrategy || "",
       name: formState.name || "Lighthouse Scan"
     };
+
+
 
     submit(data, { method: "post" });
   }
@@ -116,6 +145,7 @@ export default function NewScanForm() {
           <BlockStack gap="500">
             <Card>
               <BlockStack gap="500">
+               
                 <Text as={"h2"} variant="headingLg">
                   Name 
                 </Text>
@@ -129,6 +159,17 @@ export default function NewScanForm() {
                   onChange={(name) => setFormState({ ...formState, name: name })}
                   placeholder="Lighthouse Scan"
                   // error={errors.url}
+                />
+                      <Text as={"h2"} variant="headingLg">
+                  What URL would you like to scan?
+                </Text>
+                <ChoiceList
+                  id="scantype"
+                  title="Select a Domain Attached to you Shopify Store "
+                  selected={formState.url}
+                  onChange={(url) => setFormState({ ...formState, url: url })}
+                  choices={shopDomains.map(url => ({ label: url.url, value: url.url }))}
+
                 />
                 <Text as={"h2"} variant="headingLg">
                   Choose your Scan Options

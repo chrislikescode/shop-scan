@@ -3,7 +3,7 @@
 client_id = "041d4df59e804374540c50ade9268ac8"
 name = "Lighthouse Scanner"
 handle = "google-lighthouse-scanner"
-application_url = "https://google-lighthouse-scanner.fly.dev"
+application_url = "https://committee-violent-probability-pleasure.trycloudflare.com"
 embedded = true
 
 [build]
@@ -17,9 +17,9 @@ scopes = ""
 
 [auth]
 redirect_urls = [
-  "https://google-lighthouse-scanner.fly.dev/auth/callback",
-  "https://google-lighthouse-scanner.fly.dev/auth/shopify/callback",
-  "https://google-lighthouse-scanner.fly.dev/api/auth/callback"
+  "https://committee-violent-probability-pleasure.trycloudflare.com/auth/callback",
+  "https://committee-violent-probability-pleasure.trycloudflare.com/auth/shopify/callback",
+  "https://committee-violent-probability-pleasure.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]
