@@ -7,17 +7,39 @@ import {
   Link
 } from "@shopify/polaris";
 import { useLoaderData, useNavigate, Outlet} from "@remix-run/react";
-import { authenticate } from "../shopify.server";
+import { authenticate, ONE_TIME } from "../shopify.server";
 import { getScans } from "../models/Scans.server";
 import formatDate from "../util/formatdate";
 
 export async function loader({ request }) {
-  const { session } = await authenticate.admin(request);
+  const { session, billing } = await authenticate.admin(request);
   const {shop} = session;
+
+  let shopName = shop.split(".")[0];
+  // Billing Require Example
+  const billingCheck = await billing.require({
+    plans: [ONE_TIME],
+    isTest: true,
+    onFailure: async () => billing.request({ 
+      plan: ONE_TIME,
+      isTest: true,
+      returnUrl: `https://admin.shopify.com/store/${shopName}/apps/google-lighthouse-scanner/app`,
+     }),  
+  });
+
+  // Billing Check Example
+  // billing.check returns : { hasActivePayment: boolean, appSubscriptions: AppSubscription[], oneTimePurchases: [{id: string, name: string, test: boolean, status: string}] }
+  // const { hasActivePayment, appSubscriptions } = await billing.check({
+  //   plans: [ONE_TIME],
+  //   isTest: true,
+  // });
+  // console.log("Has Active Payment", hasActivePayment);
+  // console.log("App Subscriptions", appSubscriptions);
+
+
   const scans = await getScans(shop);
   return {scanData: scans};
 };
-
 
 
 
