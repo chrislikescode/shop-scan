@@ -31,7 +31,7 @@ export async function loader({ request }) {
   // billing.check returns : { hasActivePayment: boolean, appSubscriptions: AppSubscription[], oneTimePurchases: [{id: string, name: string, test: boolean, status: string}] }
   // const { hasActivePayment, appSubscriptions } = await billing.check({
   //   plans: [ONE_TIME],
-  //   isTest: true,
+  //   isTest: true,q
   // });
   // console.log("Has Active Payment", hasActivePayment);
   // console.log("App Subscriptions", appSubscriptions);
