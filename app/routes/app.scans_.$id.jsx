@@ -396,6 +396,7 @@ const AuditBlock = ({auditData}) => {
     auditDescription = auditDescription.replace(urlRegex, '');
     auditDescription = auditDescription.replace(textRegex, '');
     auditDescription = auditDescription.replace(/\s\s+/g, ' ').trim();
+    auditDescription = auditDescription.replace(/[.,;:!?]?\s*$/, '');
 
     return(
         <Card>

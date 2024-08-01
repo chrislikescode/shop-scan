@@ -90,7 +90,7 @@ export default function NewScanForm() {
     setIsSubmitting(true);
 
     const data = { 
-      url: formState.url || shopDomains[0],
+      url: formState.url || shopDomains[0].url,
       scanTypes: formState.scanTypes || [],
       deviceStrategy: formState.deviceStrategy || "",
       name: formState.name || "Lighthouse Scan"

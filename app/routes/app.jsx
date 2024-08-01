@@ -6,6 +6,8 @@ import { NavMenu } from "@shopify/app-bridge-react";
 import polarisStyles from "@shopify/polaris/build/esm/styles.css?url";
 import { authenticate } from "../shopify.server";
 
+import { MediaCard } from "@shopify/polaris";
+
 export const links = () => [{ rel: "stylesheet", href: polarisStyles }];
 
 export const loader = async ({ request }) => {
@@ -24,6 +26,7 @@ export default function App() {
           Home
         </Link>
       </NavMenu>
+    
       <Outlet />
     </AppProvider>
   );
