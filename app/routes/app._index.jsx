@@ -1,15 +1,15 @@
 import {
   Card,
-  EmptyState,
   Layout,
   Page,
-  IndexTable,
-  Link
 } from "@shopify/polaris";
-import { useLoaderData, useNavigate, Outlet} from "@remix-run/react";
+import { useLoaderData, useNavigate, Outlet } from "@remix-run/react";
 import { authenticate, ONE_TIME } from "../shopify.server";
 import { getScans } from "../models/Scans.server";
-import formatDate from "../util/formatdate";
+// Components
+
+import { ScanTable, EmptyScanState } from "../components/PastScans";
+import { useState } from "react";
 
 export async function loader({ request }) {
   const { session, billing } = await authenticate.admin(request);
@@ -36,81 +36,30 @@ export async function loader({ request }) {
   // console.log("Has Active Payment", hasActivePayment);
   // console.log("App Subscriptions", appSubscriptions);
 
-
-  const scans = await getScans(shop);
+  const scans = await getScans(shop, 1, 100);
   return {scanData: scans};
 };
 
 
-
-const EmptyScanState = ({ onAction }) => (
-  <EmptyState
-      heading="Run a Google Lighthouse Scan on your Shopify store"
-      action={{
-      content: "Scan",
-      onAction,
-      }}
-      image="https://developer.chrome.com/static/docs/lighthouse/overview/image/lighthouse-logo-3c45f51ca8cfc.svg"
-  >
-      <p>Run a Google Lighthouse Scan on your store and learn ways you can improve your site. </p>
-  </EmptyState>
-);
-
-const ScanTable = ({ scans }) => {
-
- let x = 0;
-
-
-  return (
-    <IndexTable
-      resourceName={{
-        singular: "Past Scan",
-        plural: "Past Scans",
-      }}
-      itemCount={scans.length}
-      headings={[
-        { title: "ID" },
-        { title: "NAME"},
-        { title: "URL" },
-        { title: "DATE"}
-      ]}
-      selectable={false}
-    >
-      {scans.map((scan) => {
-        x += 1;
-      return (
-        <ScanTableRow key={scan.id} scan={scan} x={x} />
-        )}
-      )}
-    </IndexTable>
-  );
-};
-
-const ScanTableRow = ({ scan, x }) => {
+// export async function action({ request }) {
+//   const { session } = await authenticate.admin(request);
+//   const { shop } = session;
   
-  return (
-  <IndexTable.Row id={scan.id} position={scan.id}>
-    <IndexTable.Cell>
-        {x}
-    </IndexTable.Cell>
-    <IndexTable.Cell>
-      <Link url={`/app/scans/${scan.id}`}>
-        {scan.name}
-      </Link>
-    </IndexTable.Cell>
-    <IndexTable.Cell>
-        {scan.shop}
-    </IndexTable.Cell>
-    <IndexTable.Cell>
-        {formatDate(scan.createdAt)}
-    </IndexTable.Cell>
-  </IndexTable.Row>
-  )
-};
+//   const scanData  = await await getScans(shop, 1, 1);
+
+//   console.log("Scan Data", scanData);
+
+// }; 
 
 export default function Performance() {
   const { scanData } = useLoaderData();
-  const scans = scanData;
+
+  const [page, setPage] = useState(1);
+  const [scans, setScans] = useState(scanData);
+  let scansPerPage = 10;
+
+  let currentPageScans = scans.slice((page - 1) * scansPerPage, (page - 1) * scansPerPage + scansPerPage);
+
   const navigate = useNavigate();
 
   return (
@@ -126,7 +75,7 @@ export default function Performance() {
             {scans === null ? (
               <EmptyScanState onAction={() => navigate("/app/scans/new")} />
             ) : (
-              <ScanTable scans={scans} />
+              <ScanTable totalScans={scans.length} scansPerPage={scansPerPage} scans={currentPageScans} page={page} setPage={setPage} />
             )}
           </Card>
         </Layout.Section>

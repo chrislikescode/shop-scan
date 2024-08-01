@@ -18,7 +18,10 @@ export async function getScan(shop) {
     return ({data: scan.data});
 }
 
-export async function getScans(shop) {
+export async function getScans(shop, page = 1, pageSize = 10) {
+  // Calculate the number of records to skip based on the current page and page size
+  const skip = (page - 1) * pageSize;
+
   const scans = await db.scan.findMany({
     where: {
       shop: shop,
@@ -32,14 +35,13 @@ export async function getScans(shop) {
       name: true,
       createdAt: true,
     },
+    skip: skip, // Skip the number of records calculated
+    take: pageSize, // Take only the number of records specified by pageSize
   });
-
-  if (!scans || scans.length === 0) {
-    return null;
-  }
 
   return scans;
 }
+
 
 export async function getScanById(shop,id) {
 
