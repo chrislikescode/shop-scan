@@ -15,7 +15,7 @@ export const EmptyScanState = ({ onAction }) => (
         }}
         image="https://developer.chrome.com/static/docs/lighthouse/overview/image/lighthouse-logo-3c45f51ca8cfc.svg"
     >
-        <p>Run a Google Lighthouse Scan on your store and learn ways you can improve your site. </p>
+        <p>Our Shopify app integrates a Google Lighthouse scanner directly into your store's dashboard, allowing you to conveniently assess the performance of your domains. By running comprehensive scans, you can evaluate key metrics such as speed, accessibility, and SEO. The app provides detailed reports that help you understand how well your site performs in these areas and identify specific improvements you can make. This tool is designed to help you ensure that your store offers a fast, accessible, and optimized experience for all visitors.</p>
     </EmptyState>
 );
   
@@ -80,7 +80,7 @@ const ScanTableRow = ({ scan, x, index, page, scansPerPage}) => {
         {x[index + (page - 1) * scansPerPage]}
       </IndexTable.Cell>
       <IndexTable.Cell>
-        <Link url={`/app/scans/${scan.id}`}>
+        <Link dataPrimaryLink="true" url={`/app/scans/${scan.id}`}>
           {scan.name}
         </Link>
       </IndexTable.Cell>

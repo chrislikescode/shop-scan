@@ -74,7 +74,15 @@ export default function Performance() {
         </button>
       </ui-title-bar>
       <Layout>
+      
         <Layout.Section>
+          <Card padding="0">
+            {scanData.length < 1 ? (
+              <>
+              <EmptyScanState onAction={() => navigate("/app/scans/new")} />
+              </>
+            ) : (
+              <>
           <MediaCard
           title="Google Lighthouse Scanner"
           size="small"
@@ -98,15 +106,6 @@ export default function Performance() {
               src="https://developer.chrome.com/static/docs/lighthouse/overview/image/lighthouse-logo-3c45f51ca8cfc.svg"
             />
         </MediaCard>
-        </Layout.Section>
-        <Layout.Section>
-          <Card padding="0">
-            {scans === null ? (
-              <>
-              <EmptyScanState onAction={() => navigate("/app/scans/new")} />
-              </>
-            ) : (
-              <>
               <ScanTable totalScans={scans.length} scansPerPage={scansPerPage} scans={currentPageScans} page={page} setPage={setPage} />
               </>
             )}

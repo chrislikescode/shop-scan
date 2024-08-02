@@ -15,8 +15,8 @@ export const action = async ({ request }) => {
     case "APP_UNINSTALLED":
       if (session) {
         await db.session.deleteMany({ where: { shop } });
+        await db.Scan.deleteMany({ where: { shop: shop } });
       }
-
       break;
     case "CUSTOMERS_DATA_REQUEST":
     case "CUSTOMERS_REDACT":
