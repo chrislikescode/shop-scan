@@ -19,7 +19,7 @@ scopes = ""
 redirect_urls = [
   "https://google-lighthouse-scanner.fly.dev/auth/callback",
   "https://google-lighthouse-scanner.fly.dev/auth/shopify/callback",
-  "https://google-lighthouse-scanner.fly.dev/api/auth/callback"
+  "https://google-lighthouse-scanner.fly.devy/api/auth/callback"
 ]
 
 [webhooks]
