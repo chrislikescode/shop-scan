@@ -34,6 +34,7 @@ export async function getScans(shop, page = 1, pageSize = 10) {
       shop: true,
       name: true,
       createdAt: true,
+      scanType: true
     },
     skip: skip, // Skip the number of records calculated
     take: pageSize, // Take only the number of records specified by pageSize
@@ -83,7 +84,8 @@ async function constructPageSpeedApiUrl(data) {
   const baseUrl = "https://www.googleapis.com/pagespeedonline/v5/runPagespeed";
 
   const cleanedUrl = ensureHttps(url);
-  const params = new URLSearchParams({url: cleanedUrl, key: process.env.GOOGLE_PAGE_SPEED_API_KEY});
+  const tempURL = "https://chrislikescode.com"
+  const params = new URLSearchParams({url: tempURL, key: process.env.GOOGLE_PAGE_SPEED_API_KEY});
 
   if (scanTypes) params.append("category", scanTypes);
   if (deviceStrategy) params.append("strategy", deviceStrategy);
@@ -97,7 +99,7 @@ export async function runScan(data,shop) {
         const response = await axios.get(API_URL);
         const responseData = response.data;
         const cleanData = await formatScanData(responseData);
-        const savedScan = await saveScan(cleanData,shop,data.name);
+        const savedScan = await saveScan(cleanData,shop,data.name,data.scanTypes);
         return savedScan;
     } catch (error) {
         console.error("Error running new scan", error);
@@ -113,12 +115,13 @@ async function formatScanData(data) {
     };
 }
 
-async function saveScan(data, shop, name) {
+async function saveScan(data, shop, name, scantype) {
     const scan = await db.Scan.create({
       data: {
         shop: shop,
         data: JSON.stringify(data),
         name: name,
+        scanType: scantype
       },
     });
     return scan;

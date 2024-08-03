@@ -1,10 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { Card, Text } from '@shopify/polaris';
 import '../assets/css/FinalScore.css';
+import { capitalizeFirstLetter } from '../util/capitalizeletter';
 
-const FinalScore = ({ score }) => {
+const FinalScore = ({ score, scantype }) => {
     // Ensure the score is within 0-100 range
     const normalizedScore = Math.max(0, Math.min(score, 100));
+
+    if(scantype == "seo"){
+        scantype = "SEO"
+    } else {
+        scantype = capitalizeFirstLetter(scantype);
+    }
 
     // Circumference of the circle (2 * PI * radius)
     const radius = 45;
@@ -69,7 +76,7 @@ const FinalScore = ({ score }) => {
                         <Text variant="heading3xl" tone={tone}>{normalizedScore}</Text>
                     </div>
                 </div>
-                <Text variant="headingLg" tone={tone}>Scan Score</Text>
+                <Text variant="headingLg" tone={tone}>{scantype} Scan Score </Text>
             </div>
         </Card>
     );

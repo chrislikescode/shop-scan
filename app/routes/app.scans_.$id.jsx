@@ -1,7 +1,7 @@
 import { authenticate } from "../shopify.server";
 import { useLoaderData, useNavigate} from "@remix-run/react";
 import { Page, Layout, Card, Text, Grid, 
-    BlockStack, Button, InlineStack, DataTable, Box,Tooltip, Collapsible, InlineGrid } from '@shopify/polaris';
+    BlockStack, Button, InlineStack, DataTable, Box,Tooltip, Collapsible, InlineGrid, Scrollable } from '@shopify/polaris';
 import { styled } from 'styled-components';
 import { getScanById } from "../models/Scans.server";
 import formatDate from "../util/formatdate";
@@ -9,14 +9,28 @@ import { useState, useCallback } from "react";
 
 import FinalScore from "../components/FinalScore";
 
+import { capitalizeFirstLetter } from "../util/capitalizeletter";
+
 export async function loader({ request, params }) {
     const {session} = await authenticate.admin(request);
     const {shop} = session;
     const id = params.id;
     const scanData = await getScanById(shop, id);
     let parsedData = JSON.parse(scanData.data);
+    let scanType = scanData.scanType;
+    if(scanType == "seo"){
+      scanType = "SEO";
+    }
     let headerImage;
-    let finalScoresArray = Object.entries(parsedData.lighthouseResult.categories).map(([key, value]) => ({ [key]: value }));
+
+    // PWA doesn;t have final score 
+    console.log(parsedData.lighthouseResult.fullPageScreenshot.screenshot.data);
+
+    let finalScoresArray = [];
+    if(parsedData.lighthouseResult.categories){
+      finalScoresArray = Object.entries(parsedData.lighthouseResult.categories).map(([key, value]) => ({ [key]: value }));
+    }
+
 
     let scanKeyData = {
       "requestedUrl": parsedData.lighthouseResult.requestedUrl,
@@ -26,9 +40,11 @@ export async function loader({ request, params }) {
       "failedAuditsCount" : 0,
       "passedAuditsCount" : 0,
       "nanAuditsCount" : 0,
-      "finalScores" : finalScoresArray[0],
-      "finalScoresKey" : Object.keys(finalScoresArray[0]),
-      "scanName" : scanData.name
+      "finalScores" : finalScoresArray.length > 0 ? finalScoresArray[0] : null,
+      "finalScoresKey" : finalScoresArray.length > 0 ? Object.keys(finalScoresArray[0]) : null,
+      "scanName" : scanData.name,
+      "scanType" : scanType,
+      "screenshot": parsedData.lighthouseResult.fullPageScreenshot.screenshot.data ? parsedData.lighthouseResult.fullPageScreenshot.screenshot.data : null
     }
     
     parsedData = parsedData.lighthouseResult.audits;
@@ -596,15 +612,36 @@ export default function Scan() {
 
                    
                       <Grid>
+                      {scanKeyData.finalScores ? 
+                    
                         <Grid.Cell columnSpan={{xs: 6, sm: 3, md: 6, lg: 6, xl: 6}}>
-                          <FinalScore score={scanKeyData.finalScores[scanKeyData.finalScoresKey].score * 100} />
+                          <FinalScore score={scanKeyData.finalScores[scanKeyData.finalScoresKey].score * 100} scantype={scanKeyData.scanType} />
                         </Grid.Cell>
+                        : <></> }
+
+                      {scanKeyData.screenshot ? 
+                         <Grid.Cell columnSpan={{xs: 6, sm: 3, md: 6, lg: 6, xl: 6}}>
+                          <Box style={{position: 'relative', width:'100%'}} >
+                            <h2 style={{position: 'absolute', bottom:'10px', left:'10px', color:"white", zIndex:"99",fontSize:'20px', textShadow: `-1px -1px 0 #000, 1px -1px 0 #000,-1px 1px 0 #000,1px 1px 0 #000`}}> Scan Screenshot </h2>
+                            <Scrollable shadow style={{height: '250px', borderRadius: '10px'}} focusable >
+                                  <img src={scanKeyData.screenshot}  width="100%" />
+                              </Scrollable>
+                          </Box>
+                         </Grid.Cell>
+                      : <></>}
+
+                       
 
                         <Grid.Cell columnSpan={{xs: 6, sm: 6, md: 6, lg: 6 , xl: 6}}> 
                           <Card title="Past Scan Details" sectioned>
                             <Text variant="headingLg" as="h2">
                                 Key Scan Details ✨                
                             </Text>
+                            <Box paddingBlock="200">
+                              <Text variant="headingMd" as="h3">
+                                Scan Type : {scanKeyData.scanType}                         
+                              </Text>                    
+                            </Box>
                             <Box paddingBlock="200">
                               <Text variant="headingMd" as="h3">
                                 Requested URL                         
@@ -641,7 +678,11 @@ export default function Scan() {
                               </Text>
                             </Box>
                           </Card>
-                        </Grid.Cell>      
+                        </Grid.Cell>    
+
+
+                        
+                      
                       </Grid>       
 
                         <InlineGrid gap="400" columns={3}>

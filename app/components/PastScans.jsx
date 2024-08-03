@@ -48,6 +48,7 @@ export const ScanTable = ({ totalScans, scansPerPage, scans, page, setPage}) => 
         headings={[
         { title: "ID" },
         { title: "NAME"},
+        { title: "TYPE"},
         { title: "URL" },
         { title: "DATE"}
         ]}
@@ -83,6 +84,9 @@ const ScanTableRow = ({ scan, x, index, page, scansPerPage}) => {
         <Link dataPrimaryLink="true" url={`/app/scans/${scan.id}`}>
           {scan.name}
         </Link>
+      </IndexTable.Cell>
+      <IndexTable.Cell>
+          {scan.scanType}
       </IndexTable.Cell>
       <IndexTable.Cell>
           {scan.shop}
