@@ -84,8 +84,8 @@ async function constructPageSpeedApiUrl(data) {
   const baseUrl = "https://www.googleapis.com/pagespeedonline/v5/runPagespeed";
 
   const cleanedUrl = ensureHttps(url);
-  const tempURL = "https://chrislikescode.com"
-  const params = new URLSearchParams({url: tempURL, key: process.env.GOOGLE_PAGE_SPEED_API_KEY});
+  // const tempURL = "https://exorholdings.com/"
+  const params = new URLSearchParams({url: cleanedUrl, key: process.env.GOOGLE_PAGE_SPEED_API_KEY});
 
   if (scanTypes) params.append("category", scanTypes);
   if (deviceStrategy) params.append("strategy", deviceStrategy);
