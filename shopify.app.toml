@@ -3,7 +3,7 @@
 client_id = "041d4df59e804374540c50ade9268ac8"
 name = "Lighthouse Scanner"
 handle = "google-lighthouse-scanner"
-application_url = "https://makers-propecia-instant-ottawa.trycloudflare.com"
+application_url = "https://hd-stereo-idle-absence.trycloudflare.com"
 embedded = true
 
 [build]
@@ -17,9 +17,9 @@ scopes = ""
 
 [auth]
 redirect_urls = [
-  "https://makers-propecia-instant-ottawa.trycloudflare.com/auth/callback",
-  "https://makers-propecia-instant-ottawa.trycloudflare.com/auth/shopify/callback",
-  "https://makers-propecia-instant-ottawa.trycloudflare.com/api/auth/callback"
+  "https://hd-stereo-idle-absence.trycloudflare.com/auth/callback",
+  "https://hd-stereo-idle-absence.trycloudflare.com/auth/shopify/callback",
+  "https://hd-stereo-idle-absence.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]

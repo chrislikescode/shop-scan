@@ -24,13 +24,18 @@ export async function loader({ request, params }) {
     let headerImage;
 
     // PWA doesn;t have final score 
-    console.log(parsedData.lighthouseResult.fullPageScreenshot.screenshot.data);
+    // console.log(Object.keys(parsedData.lighthouseResult));
+    console.log(parsedData.lighthouseResult.entities);
 
     let finalScoresArray = [];
     if(parsedData.lighthouseResult.categories){
       finalScoresArray = Object.entries(parsedData.lighthouseResult.categories).map(([key, value]) => ({ [key]: value }));
     }
 
+    let entitiesArray = [];
+    if(parsedData.lighthouseResult.entities){
+      entitiesArray = parsedData.lighthouseResult.entities;
+    }
 
     let scanKeyData = {
       "requestedUrl": parsedData.lighthouseResult.requestedUrl,
@@ -44,7 +49,8 @@ export async function loader({ request, params }) {
       "finalScoresKey" : finalScoresArray.length > 0 ? Object.keys(finalScoresArray[0]) : null,
       "scanName" : scanData.name,
       "scanType" : scanType,
-      "screenshot": parsedData.lighthouseResult.fullPageScreenshot.screenshot.data ? parsedData.lighthouseResult.fullPageScreenshot.screenshot.data : null
+      "screenshot": parsedData.lighthouseResult.fullPageScreenshot.screenshot.data ? parsedData.lighthouseResult.fullPageScreenshot.screenshot.data : null,
+      "entities": entitiesArray
     }
     
     parsedData = parsedData.lighthouseResult.audits;
@@ -137,7 +143,6 @@ const MetricBlock = ({metricData}) => {
 // AUDIT BLOCK COMPONENTSs
 const AuditDataTable = ({auditDetails}) => {
     // Build the content type,column header and rows arrays from the audit data
-    
     let dataContentTypes= [];
     let dataHeadings = [];
     let dataRows = [];
@@ -163,7 +168,7 @@ const AuditDataTable = ({auditDetails}) => {
           let valueType = dataContentTypes[x];
 
           if(typeof value === "string"){
-            value = truncateString(value, 50);
+            value = truncateString(value, 250);
           } 
 
           if(valueType === "bytes"){
@@ -174,13 +179,13 @@ const AuditDataTable = ({auditDetails}) => {
 
           dataRow.push(value);
         } else { // if Node object in items then push each key value pair into the data row
-            let nodeKeys = Object.keys(auditDetails.items[i][headingKeys[x]]); 
+            // let nodeKeys = Object.keys(auditDetails.items[i][headingKeys[x]]); 
 
-            nodeKeys.forEach(nodeKey => { 
-              if(typeof auditDetails.items[i][headingKeys[x]][nodeKey] !== "object"){
-                dataRows.push([nodeKey, auditDetails.items[i][headingKeys[x]][nodeKey]]);
-              }
-            })
+            // nodeKeys.forEach(nodeKey => { 
+            //   if(typeof auditDetails.items[i][headingKeys[x]][nodeKey] !== "object"){
+            //     dataRows.push([nodeKey, auditDetails.items[i][headingKeys[x]][nodeKey]]);
+            //   }
+            // })
         }
       }
       dataRows.push(dataRow);
@@ -629,6 +634,37 @@ export default function Scan() {
                           </Box>
                          </Grid.Cell>
                       : <></>}
+
+                      {scanKeyData.entities.length > 0 ? 
+                         <Grid.Cell columnSpan={{xs: 6, sm: 3, md: 6, lg: 6, xl: 6}}>
+                            <Card title="Past Scan Details" sectioned>
+                              <Text variant="headingLg" as="h2">
+                                Entities on Page           
+                              </Text>
+                              <Box paddingBlock="200">
+                              <Scrollable style={{height: '200px', borderRadius: '10px'}} focusable >
+                                <BlockStack gap="400">
+                                {scanKeyData.entities.map((entity, index) => ( 
+                                  <Box>
+                                    <Text as="h2">Name:  {entity.name} </Text>
+                                    <Text as="h2">URL:  {entity.origins[0]} </Text>
+                                  </Box>
+                                  ))}
+                                </BlockStack>
+                                </Scrollable>
+                              
+                                            
+                              </Box>
+                           
+                          </Card>
+                        </Grid.Cell>
+
+                  
+                      : <></>}
+
+
+
+
 
                        
 
