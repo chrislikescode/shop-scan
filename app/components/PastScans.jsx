@@ -8,14 +8,14 @@ import formatDate from "../util/formatdate";
 
 export const EmptyScanState = ({ onAction }) => (
     <EmptyState
-        heading="Run a Google Lighthouse Scan on your Shopify store"
+        heading="Insights on Your Shopify Store's Performance!"
         action={{
-        content: "Scan",
+        content: "Run First Scan",
         onAction,
         }}
-        image="https://developer.chrome.com/static/docs/lighthouse/overview/image/lighthouse-logo-3c45f51ca8cfc.svg"
+        image="app/assets/images/Lighthouse_200.png"
     >
-        <p>Our Shopify app integrates a Google Lighthouse scanner directly into your store's dashboard, allowing you to conveniently assess the performance of your domains. By running comprehensive scans, you can evaluate key metrics such as speed, accessibility, and SEO. The app provides detailed reports that help you understand how well your site performs in these areas and identify specific improvements you can make. This tool is designed to help you ensure that your store offers a fast, accessible, and optimized experience for all visitors.</p>
+        <p>Unlock a deeper understanding of your Shopify store's performance with ShopScan, the ultimate tool for running Google PageSpeed Insights scans directly from your Shopify admin panel. No more guessing about your store's speed and efficiency—ShopScan provides you with detailed insights to help you make informed decisions.</p>
     </EmptyState>
 );
   

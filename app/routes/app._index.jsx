@@ -68,7 +68,7 @@ export default function Performance() {
 
   return (
     <Page>
-      <ui-title-bar title="Google Lighthouse Scanner">
+      <ui-title-bar title="ShopScan">
         <button variant="primary" onClick={() => navigate("/app/scans/new")}>
           Scan
         </button>
@@ -84,7 +84,7 @@ export default function Performance() {
             ) : (
               <>
           <MediaCard
-          title="Google Lighthouse Scanner"
+          title="ShopScan"
           size="small"
           primaryAction={{
             content: 'New Scan',
@@ -92,7 +92,7 @@ export default function Performance() {
               navigate("/app/scans/new")
             },
           }}
-          description="Our Shopify app integrates a Google Lighthouse scanner directly into your store's dashboard, allowing you to conveniently assess the performance of your domains. By running comprehensive scans, you can evaluate key metrics such as speed, accessibility, and SEO. The app provides detailed reports that help you understand how well your site performs in these areas and identify specific improvements you can make. This tool is designed to help you ensure that your store offers a fast, accessible, and optimized experience for all visitors."
+          description="Unlock a deeper understanding of your Shopify store's performance with ShopScan, the ultimate tool for running Google PageSpeed Insights scans directly from your Shopify admin panel. No more guessing about your store's speed and efficiency—ShopScan provides you with detailed insights to help you make informed decisions."
           // popoverActions={[{content: 'Dismiss', onAction: () => {}}]}
         >
             <img
@@ -103,7 +103,7 @@ export default function Performance() {
                 objectFit: 'contain',
                 objectPosition: 'center',
               }}
-              src="https://developer.chrome.com/static/docs/lighthouse/overview/image/lighthouse-logo-3c45f51ca8cfc.svg"
+              src="/assets/images/Lighthouse_200.png"
             />
         </MediaCard>
               <ScanTable totalScans={scans.length} scansPerPage={scansPerPage} scans={currentPageScans} page={page} setPage={setPage} />

@@ -93,7 +93,7 @@ export default function NewScanForm() {
       url: formState.url || shopDomains[0].url,
       scanTypes: formState.scanTypes || [],
       deviceStrategy: formState.deviceStrategy || "",
-      name: formState.name || "Lighthouse Scan"
+      name: formState.name || "ShopScan"
     };
 
 
@@ -103,7 +103,7 @@ export default function NewScanForm() {
 
   return (
     <Page>
-      <ui-title-bar title={"New Lighthouse Scan"}>
+      <ui-title-bar title={"New ShopScan"}>
         <button variant="breadcrumb" onClick={() => navigate("/app/")}>
           Past Scans
         </button>
@@ -157,7 +157,7 @@ export default function NewScanForm() {
                   autoComplete="off"
                   value={formState.name}
                   onChange={(name) => setFormState({ ...formState, name: name })}
-                  placeholder="Lighthouse Scan"
+                  placeholder="Shop Scan"
                   // error={errors.url}
                 />
                       <Text as={"h2"} variant="headingLg">

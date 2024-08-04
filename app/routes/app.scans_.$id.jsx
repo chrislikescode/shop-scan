@@ -1,11 +1,11 @@
 import { authenticate } from "../shopify.server";
 import { useLoaderData, useNavigate} from "@remix-run/react";
-import { Page, Layout, Card, Text, Grid, 
+import { Page, Layout, Card, Text, Grid, EmptyState,
     BlockStack, Button, InlineStack, DataTable, Box,Tooltip, Collapsible, InlineGrid, Scrollable } from '@shopify/polaris';
 import { styled } from 'styled-components';
 import { getScanById } from "../models/Scans.server";
 import formatDate from "../util/formatdate";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect} from "react";
 
 import FinalScore from "../components/FinalScore";
 
@@ -16,6 +16,9 @@ export async function loader({ request, params }) {
     const {shop} = session;
     const id = params.id;
     const scanData = await getScanById(shop, id);
+    if(!scanData){
+      return {error: "Scan not found"};
+    }
     let parsedData = JSON.parse(scanData.data);
     let scanType = scanData.scanType;
     if(scanType == "seo"){
@@ -25,7 +28,7 @@ export async function loader({ request, params }) {
 
     // PWA doesn;t have final score 
     // console.log(Object.keys(parsedData.lighthouseResult));
-    console.log(parsedData.lighthouseResult.entities);
+    // console.log(parsedData.lighthouseResult.entities);
 
     let finalScoresArray = [];
     if(parsedData.lighthouseResult.categories){
@@ -597,12 +600,42 @@ const FilmStripNode = ({filmStripNodeData}) => {
 
 
 export default function Scan() {
-    const {parsedData, scanKeyData, headerImage} = useLoaderData();
-    const navigate = useNavigate();
-    
+    const {parsedData, scanKeyData, headerImage, error} = useLoaderData();
+
+    let navigate = useNavigate();
+
+    useEffect(() => {
+    }, [])
+
+  
+
+    if(error){
+
+      const navigateToScans = () => {
+        navigate("/app/");
+      }
+
+      return (
+      <Page>
+         <ui-title-bar title={"Run a New ScanShop Scan"}>
+            <button variant="breadcrumb" onClick={() => navigate("/app/")}>
+              Past Scans
+            </button>
+            <button variant="primary" onClick={() => navigate("/app/scans/new")}>
+            Scan
+          </button>
+          </ui-title-bar>
+          <EmptyState
+              heading="That Scan Does Not Exist 😢"
+              action={{ content: "Go Back to Scans", onAction: navigateToScans }}
+          >
+        </EmptyState>
+      </Page>
+        )
+      }
     return (
         <Page>
-           <ui-title-bar title={"Run a New Lighthouse Scan"}>
+           <ui-title-bar title={"Run a New ShopScan"}>
             <button variant="breadcrumb" onClick={() => navigate("/app/")}>
               Past Scans
             </button>
