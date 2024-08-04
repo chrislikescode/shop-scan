@@ -9,7 +9,6 @@ import { useState, useCallback, useEffect} from "react";
 
 import FinalScore from "../components/FinalScore";
 
-import { capitalizeFirstLetter } from "../util/capitalizeletter";
 
 export async function loader({ request, params }) {
     const {session} = await authenticate.admin(request);
@@ -24,20 +23,17 @@ export async function loader({ request, params }) {
     if(scanType == "seo"){
       scanType = "SEO";
     }
-    let headerImage;
 
     // PWA doesn;t have final score 
     // console.log(Object.keys(parsedData.lighthouseResult));
     // console.log(parsedData.lighthouseResult.entities);
 
-    let finalScoresArray = [];
-    if(parsedData.lighthouseResult.categories){
-      finalScoresArray = Object.entries(parsedData.lighthouseResult.categories).map(([key, value]) => ({ [key]: value }));
-    }
-
-    let entitiesArray = [];
-    if(parsedData.lighthouseResult.entities){
-      entitiesArray = parsedData.lighthouseResult.entities;
+    let finalScores = null;
+    let finalScoresKey = null;  
+    if (parsedData.lighthouseResult.categories) {
+      const categories = parsedData.lighthouseResult.categories;
+      finalScores = categories ? categories : null;
+      finalScoresKey = categories ? Object.keys(categories) : null;
     }
 
     let scanKeyData = {
@@ -48,34 +44,33 @@ export async function loader({ request, params }) {
       "failedAuditsCount" : 0,
       "passedAuditsCount" : 0,
       "nanAuditsCount" : 0,
-      "finalScores" : finalScoresArray.length > 0 ? finalScoresArray[0] : null,
-      "finalScoresKey" : finalScoresArray.length > 0 ? Object.keys(finalScoresArray[0]) : null,
+      "finalScores" : finalScores,
+      "finalScoresKey" : finalScoresKey,
       "scanName" : scanData.name,
       "scanType" : scanType,
       "screenshot": parsedData.lighthouseResult.fullPageScreenshot.screenshot.data ? parsedData.lighthouseResult.fullPageScreenshot.screenshot.data : null,
-      "entities": entitiesArray
+      "entities": parsedData.lighthouseResult.entities ? parsedData.lighthouseResult.entities : null
     }
     
-    parsedData = parsedData.lighthouseResult.audits;
-    
-    parsedData = Object.entries(parsedData).map(([key, value]) => ({ [key]: value }));
-
-    parsedData.forEach(audit => {
-      let key = Object.keys(audit)[0];
-      if(key === "final-screenshot"){
-        headerImage = audit["final-screenshot"].details.data;
+    let audits = parsedData.lighthouseResult.audits;
+    parsedData = Object.entries(audits).map(([key, value]) => ({ [key]: value }));
+    let headerImage;
+    Object.entries(audits).forEach(([key, value]) => {
+      if (key === "final-screenshot" && value.details) {
+        headerImage = value.details.data;
       }
-
-      if(audit[key].score == 1){
+    
+      const score = value.score;
+    
+      if (score === 1) {
         scanKeyData.passedAuditsCount += 1;
-        return;
-      } else if(audit[key].score == null){
+      } else if (score === null) {
         scanKeyData.nanAuditsCount += 1;
-        return;
       } else {
         scanKeyData.failedAuditsCount += 1;
       }
-    })
+    });
+    
    
     return ({parsedData,scanKeyData,headerImage});
 }
@@ -255,6 +250,8 @@ const SupplementAuditBlockUI = ({ auditDetails }) => {
   );
 };
 
+
+// gets an array of audit data
 const AuditBlockFactory = ({auditData}) =>{
   const [openFailed, setOpenFailed] = useState(true);
   const [openPassed, setOpenPassed] = useState(false);
@@ -602,19 +599,12 @@ const FilmStripNode = ({filmStripNodeData}) => {
 export default function Scan() {
     const {parsedData, scanKeyData, headerImage, error} = useLoaderData();
 
-    let navigate = useNavigate();
-
-    useEffect(() => {
-    }, [])
-
-  
+    let navigate = useNavigate();  
 
     if(error){
-
       const navigateToScans = () => {
         navigate("/app/");
       }
-
       return (
       <Page>
          <ui-title-bar title={"Run a New ScanShop Scan"}>

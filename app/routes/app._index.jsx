@@ -18,7 +18,7 @@ export async function loader({ request }) {
 
   let shopName = shop.split(".")[0];
   // Billing Require Example
-  const billingCheck = await billing.require({
+  await billing.require({
     plans: [ONE_TIME],
     isTest: true,
     onFailure: async () => billing.request({ 
@@ -42,28 +42,20 @@ export async function loader({ request }) {
 };
 
 
-// export async function action({ request }) {
-//   const { session } = await authenticate.admin(request);
-//   const { shop } = session;
-  
-//   const scanData  = await await getScans(shop, 1, 1);
-
-//   console.log("Scan Data", scanData);
-
-// }; 
+function getScansOnCurrentPage(scans, page, scansPerPage){
+  return scans.slice((page - 1) * scansPerPage, (page - 1) * scansPerPage + scansPerPage);
+}
 
 export default function Performance() {
   const { scanData } = useLoaderData();
-  const [scans, setScans] = useState(scanData);
   const [page, setPage] = useState(1);
-  const [currentPageScans, setCurrrentPageScans] = useState(scans.slice((page - 1) * 10, (page - 1) * 10 + 10));
+  let scansPerPage = 5;
+  const [currentPageScans, setCurrrentPageScans] = useState(getScansOnCurrentPage(scanData, page, scansPerPage));
 
   const navigate = useNavigate();
 
-  let scansPerPage = 5;
-
   useEffect(() =>{
-    setCurrrentPageScans(scans.slice((page - 1) * scansPerPage, (page - 1) * scansPerPage + scansPerPage));
+    setCurrrentPageScans(getScansOnCurrentPage(scanData, page, scansPerPage));
   },[page])
 
   return (
@@ -106,7 +98,7 @@ export default function Performance() {
               src="/images/LighthouseScannerIcon_200.png"
             />
         </MediaCard>
-              <ScanTable totalScans={scans.length} scansPerPage={scansPerPage} scans={currentPageScans} page={page} setPage={setPage} />
+              <ScanTable totalScans={scanData.length} scansPerPage={scansPerPage} scans={currentPageScans} page={page} setPage={setPage} />
               </>
             )}
           </Card>

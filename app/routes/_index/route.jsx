@@ -19,36 +19,12 @@ export default function App() {
   return (
     <div className={styles.index}>
       <div className={styles.content}>
-        <h1 className={styles.heading}>A short heading about [your app]</h1>
+        <img src="https://google-lighthouse-scanner.fly.dev/images/LighthouseScannerIcon_200.png"/>
+        <h1 className={styles.heading}>Welcome to ShopScan</h1>
         <p className={styles.text}>
-          A tagline about [your app] that describes your value proposition.
+        Discover the detailed metrics and analytics of your Shopify store with ShopScan, the ultimate tool for conducting Google PageSpeed Insights scans right from your Shopify admin panel. Eliminate the guesswork and get clear, actionable data to help you enhance your store's user experience.
         </p>
-        {showForm && (
-          <Form className={styles.form} method="post" action="/auth/login">
-            <label className={styles.label}>
-              <span>Shop domain</span>
-              <input className={styles.input} type="text" name="shop" />
-              <span>e.g: my-shop-domain.myshopify.com</span>
-            </label>
-            <button className={styles.button} type="submit">
-              Log in
-            </button>
-          </Form>
-        )}
-        <ul className={styles.list}>
-          <li>
-            <strong>Product feature</strong>. Some detail about your feature and
-            its benefit to your customer.
-          </li>
-          <li>
-            <strong>Product feature</strong>. Some detail about your feature and
-            its benefit to your customer.
-          </li>
-          <li>
-            <strong>Product feature</strong>. Some detail about your feature and
-            its benefit to your customer.
-          </li>
-        </ul>
+   
       </div>
     </div>
   );
