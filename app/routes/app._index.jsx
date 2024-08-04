@@ -103,7 +103,7 @@ export default function Performance() {
                 objectFit: 'contain',
                 objectPosition: 'center',
               }}
-              src="/assets/images/Lighthouse_200.png"
+              src="/images/LighthouseScannerIcon_200.png"
             />
         </MediaCard>
               <ScanTable totalScans={scans.length} scansPerPage={scansPerPage} scans={currentPageScans} page={page} setPage={setPage} />
