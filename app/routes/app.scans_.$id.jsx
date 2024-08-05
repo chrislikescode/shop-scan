@@ -8,6 +8,16 @@ import formatDate from "../util/formatdate";
 import { useState, useCallback, useEffect} from "react";
 
 import FinalScore from "../components/FinalScore";
+import { truncateString } from "../util/truncateString";
+
+
+// STYLED COMPONENTS
+const SolidCircle = styled.div`
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: ${props => props.color};
+`;
 
 
 export async function loader({ request, params }) {
@@ -23,10 +33,6 @@ export async function loader({ request, params }) {
     if(scanType == "seo"){
       scanType = "SEO";
     }
-
-    // PWA doesn;t have final score 
-    // console.log(Object.keys(parsedData.lighthouseResult));
-    // console.log(parsedData.lighthouseResult.entities);
 
     let finalScores = null;
     let finalScoresKey = null;  
@@ -75,24 +81,6 @@ export async function loader({ request, params }) {
     return ({parsedData,scanKeyData,headerImage});
 }
 
-
-// STYLED COMPONENTS
-const SolidCircle = styled.div`
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  background-color: ${props => props.color};
-`;
-
-// UTIL COMPONENTS
-function truncateString(str, num) {
-  if (str.length <= num) {
-    return str;
-  }
-  return str.slice(0, num) + '...';
-}
-
-
 // MEDIA CARD
 const MediaCardImage = ({ dataUrl }) => {
     return <img src={dataUrl} alt="Dynamic Image" width="100%" height="200px" style={{verticalAlign: 'bottom', objectFit: 'cover', objectPosition: 'top'}} />;
@@ -129,7 +117,7 @@ const MetricBlock = ({metricData}) => {
          <Text as="h2">
              {metricData.title}
          </Text>
-         <Text variant="heading3xl" as="h2">
+         <Text variant="heading2xl" as="h2">
              {metricData.displayValue}
          </Text>
      </Card>
@@ -157,11 +145,12 @@ const AuditDataTable = ({auditDetails}) => {
     // loop over the items in the itemData
     for(let i = 0; i < auditDetails.items.length; i++){
       let dataRow = []
-      // loop through each idea, as many times as there are header keys and push
+      // loop through each item, as many times as there are header keys and push
       // all the values into the data row using the heading keys
       for(let x = 0; x < headingKeys.length; x++){
         // Check for "node" in items 
         if(typeof auditDetails.items[i][headingKeys[x]] !== "object"){
+
           let value = auditDetails.items[i][headingKeys[x]];
           let valueType = dataContentTypes[x];
 
@@ -195,6 +184,7 @@ const AuditDataTable = ({auditDetails}) => {
         columnContentTypes={dataContentTypes}
         headings={dataHeadings}
         rows={dataRows}
+
       />
     
     )
@@ -217,8 +207,8 @@ const SupplementAuditBlockUI = ({ auditDetails }) => {
       tableContent = <AuditDataTable auditDetails={auditDetails}/>
       break;
     case "list":
-      auditDetails.items.forEach(item => {
-       listContent.push(<AuditDataTable auditDetails={item}/>)
+      auditDetails.items.forEach((item, index) => {
+       listContent.push(<AuditDataTable key={index} auditDetails={item}/>)
       })
       break;
     case "treemap-data":
@@ -260,7 +250,6 @@ const AuditBlockFactory = ({auditData}) =>{
   const handleFailedOpen = useCallback(() => setOpenFailed((open) => !open), []);
   const handlePassedOpen = useCallback(() => setOpenPassed((open) => !open), []);
   const handleNanOpen = useCallback(() => setOpenNan((open) => !open), []);
-
 
   let passedAudits =[];
   let failedAudits =[]; 
@@ -383,6 +372,7 @@ const AuditBlockFactory = ({auditData}) =>{
       </>
   )
 } 
+
 const AuditBlock = ({auditData}) => {
     // Accessing the title property without knowing the first key
     const auditKey = Object.keys(auditData);
@@ -408,19 +398,20 @@ const AuditBlock = ({auditData}) => {
     // Use the regex to extract the URL
     const urlMatch = auditDescription.match(urlRegex);
     const textMatch = auditDescription.match(textRegex);
-    let auditLink;
-    let auditLinkText; 
-    if (urlMatch && urlMatch[1] && textMatch && textMatch[1]) {
-      auditLink = urlMatch[1];
-      auditLinkText = textMatch[1]
-    } 
-    auditDescription = auditDescription.replace(urlRegex, '');
-    auditDescription = auditDescription.replace(textRegex, '');
-    auditDescription = auditDescription.replace(/\s\s+/g, ' ').trim();
-    auditDescription = auditDescription.replace(/[.,;:!?]?\s*$/, '');
+
+    // Extract the link and link text if matches are found
+    const auditLink = urlMatch?.[1] ?? null;
+    const auditLinkText = textMatch?.[1] ?? null;
+
+    auditDescription = auditDescription
+      .replace(urlRegex, '')
+      .replace(textRegex, '')
+      .replace(/\s\s+/g, ' ') // Remove extra spaces
+      .trim()
+      .replace(/[.,;:!?]?\s*$/, ''); // Remove trailing punctuation
 
     return(
-        <Card>
+        <Card key={auditKey}>
           <BlockStack gap="500">
             <InlineStack wrap={false} gap="400" blockAlign="center" align="space-between">
                   <Text as="h2" variant="headingLg">
@@ -444,7 +435,7 @@ const AuditBlock = ({auditData}) => {
                 <Text as="p">
                     {auditDescription}
                 </Text>
-                { hasSupplementalUI ?  <SupplementAuditBlockUI auditDetails={auditDetails} /> : <> </>}
+                { hasSupplementalUI ?  <SupplementAuditBlockUI auditDetails={auditDetails} /> : <></>}
               </BlockStack>
 
           </BlockStack>
@@ -478,7 +469,7 @@ const TreeMapTable = ({treeNodeData, totalBytes}) =>{
 
     treeNodeData.forEach(node => {
       if(!node.children){
-        let dataRow = [truncateString(node.name,100), node.resourceBytes, node.unusedBytes, ((node.resourceBytes/totalBytes) *100).toFixed(2)];
+        let dataRow = [truncateString(node.name,250), node.resourceBytes, node.unusedBytes, ((node.resourceBytes/totalBytes) *100).toFixed(2)];
         dataRows.push(dataRow);
       }
     })
@@ -593,9 +584,6 @@ const FilmStripNode = ({filmStripNodeData}) => {
 
 }
 
-// Opportunity Block Components - kind of just a data table? 
-
-
 export default function Scan() {
     const {parsedData, scanKeyData, headerImage, error} = useLoaderData();
 
@@ -658,7 +646,7 @@ export default function Scan() {
                          </Grid.Cell>
                       : <></>}
 
-                      {scanKeyData.entities.length > 0 ? 
+                      {scanKeyData.entities?.length > 0 ? 
                          <Grid.Cell columnSpan={{xs: 6, sm: 3, md: 6, lg: 6, xl: 6}}>
                             <Card title="Past Scan Details" sectioned>
                               <Text variant="headingLg" as="h2">
@@ -668,7 +656,7 @@ export default function Scan() {
                               <Scrollable style={{height: '200px', borderRadius: '10px'}} focusable >
                                 <BlockStack gap="400">
                                 {scanKeyData.entities.map((entity, index) => ( 
-                                  <Box>
+                                  <Box key={index}>
                                     <Text as="h2">Name:  {entity.name} </Text>
                                     <Text as="h2">URL:  {entity.origins[0]} </Text>
                                   </Box>

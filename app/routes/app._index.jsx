@@ -15,27 +15,20 @@ import { useEffect, useState } from "react";
 export async function loader({ request }) {
   const { session, billing } = await authenticate.admin(request);
   const {shop} = session;
+  // throw new Error("Oh no! Something went wrong!");
 
   let shopName = shop.split(".")[0];
-  // Billing Require Example
+
+  // Billing Require 
   await billing.require({
     plans: [ONE_TIME],
     isTest: true,
     onFailure: async () => billing.request({ 
       plan: ONE_TIME,
       isTest: true,
-      returnUrl: `https://admin.shopify.com/store/${shopName}/apps/google-lighthouse-scanner/app`,
+      returnUrl: `https://admin.shopify.com/store/${shopName}/apps/google-shop-scan/app`,
      }),  
   });
-
-  // Billing Check Example
-  // billing.check returns : { hasActivePayment: boolean, appSubscriptions: AppSubscription[], oneTimePurchases: [{id: string, name: string, test: boolean, status: string}] }
-  // const { hasActivePayment, appSubscriptions } = await billing.check({
-  //   plans: [ONE_TIME],
-  //   isTest: true,q
-  // });
-  // console.log("Has Active Payment", hasActivePayment);
-  // console.log("App Subscriptions", appSubscriptions);
 
   const scans = await getScans(shop, 1, 100);
   return {scanData: scans};
@@ -95,7 +88,7 @@ export default function Performance() {
                 objectFit: 'contain',
                 objectPosition: 'center',
               }}
-              src="/images/LighthouseScannerIcon_200.png"
+              src="/images/LighthouseScannerIcon_200_no_bg.png"
             />
         </MediaCard>
               <ScanTable totalScans={scanData.length} scansPerPage={scansPerPage} scans={currentPageScans} page={page} setPage={setPage} />

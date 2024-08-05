@@ -19,7 +19,7 @@ export default function App() {
   return (
     <div className={styles.index}>
       <div className={styles.content}>
-        <img src="https://google-lighthouse-scanner.fly.dev/images/LighthouseScannerIcon_200.png"/>
+        <img src="https://google-lighthouse-scanner.fly.dev/images/LighthouseScannerIcon_200_no_bg.png"/>
         <h1 className={styles.heading}>Welcome to ShopScan</h1>
         <p className={styles.text}>
         Discover the detailed metrics and analytics of your Shopify store with ShopScan, the ultimate tool for conducting Google PageSpeed Insights scans right from your Shopify admin panel. Eliminate the guesswork and get clear, actionable data to help you enhance your store's user experience.

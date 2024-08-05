@@ -13,7 +13,7 @@ export const EmptyScanState = ({ onAction }) => (
         content: "Run First Scan",
         onAction,
         }}
-        image="/images/LighthouseScannerIcon_200.png"
+        image="/images/LighthouseScannerIcon_200_no_bg.png"
     >
         <p>Unlock a deeper understanding of your Shopify store's performance with ShopScan, the ultimate tool for running Google PageSpeed Insights scans directly from your Shopify admin panel. No more guessing about your store's speed and efficiency—ShopScan provides you with detailed insights to help you make informed decisions.</p>
     </EmptyState>
@@ -24,25 +24,10 @@ export const ScanTable = ({ totalScans, scansPerPage, scans, page, setPage}) => 
     // generate an array for relative id numbering on scans table
     const x = Array.from({ length: totalScans }, (_, index) => index + 1);
 
-    let nextScans;
-    let prevScans;
-    
-    if( scansPerPage > scans.length) { 
-        nextScans = false;
-    }  else {
-        nextScans = true;
-    }
+    let lastPage = Math.ceil(totalScans / scansPerPage);
+    let nextScans = page < lastPage ? true : false;
+    let prevScans = page > 1 ? true : false;
 
-    if(page > 1){
-        prevScans = true;
-    } else {
-        prevScans = false;
-    }
-    
-    // ?
-    if(scans.length == 0){
-        return <></>
-    }
 
     return (
     <IndexTable
@@ -73,16 +58,17 @@ export const ScanTable = ({ totalScans, scansPerPage, scans, page, setPage}) => 
     >
         {scans.map((scan,index) => {
         return (
-        <ScanTableRow page={page} index={index} key={scan.id} scan={scan} x={x} scansPerPage={scansPerPage}/>
+
+        <ScanTableRow key={index} page={page} index={index} scan={scan} x={x} scansPerPage={scansPerPage}/>
         )}
         )}
     </IndexTable>
     );
 };
   
-const ScanTableRow = ({ page, index, key, scan, x, scansPerPage}) => {
+const ScanTableRow = ({ page, index, scan, x, scansPerPage}) => {
     return (
-    <IndexTable.Row id={scan.id} position={scan.id} key={key}>
+    <IndexTable.Row id={scan.id} position={scan.id} key={index}>
       <IndexTable.Cell>
         {x[index + (page - 1) * scansPerPage]}
       </IndexTable.Cell>

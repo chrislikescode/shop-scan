@@ -54,12 +54,15 @@ export const ErrorBoundary = () => {
   } catch {
     // Run your own code here
     return (
-      <div id="custom_error_ui" style={{padding:'25px',display:'flex', justifyItems:'center', justifyContent:'center',flexDirection:'column'}}>
-        <img width="100px" src="https://cdn0.iconfinder.com/data/icons/shift-free/32/Error-512.png" alt="error" />
-        <h1> Something Has Gone Wrong :(</h1>
+      <div id="custom_error_ui" style={{alignItems:'center', textAlign:'center',padding:'25px',display:'flex', justifyItems:'center', justifyContent:'center',flexDirection:'column', width: '100%'}}>
+        <img width="250px" src="/images/LighthouseScannerIcon_200_no_bg.png" alt="error" />
+        <h1 style={{fontSize: '24px'}}> Something Has Gone Wrong :(</h1>
+        <p style={{padding: '20px'}}> Refresh Your page. </p>
+        <p> If this persists contact chris@chrislikescode.com. </p>
         {/* <h2> Custom Error Boundary in root.jsx </h2> */}
-          <p dangerouslySetInnerHTML={{ __html: formattedStack }} />
+          {/* <p dangerouslySetInnerHTML={{ __html: formattedStack }} /> */}
         </div>
+        
     )
   }
 };

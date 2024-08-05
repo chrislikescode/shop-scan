@@ -73,7 +73,7 @@ const FinalScore = ({ score, scantype }) => {
                         />
                     </svg>
                     <div className="score">
-                        <Text variant="heading3xl" tone={tone}>{normalizedScore}</Text>
+                        <Text variant="heading2xl" tone={tone}>{normalizedScore}</Text>
                     </div>
                 </div>
                 <Text variant="headingLg" tone={tone}>{scantype} Scan Score </Text>

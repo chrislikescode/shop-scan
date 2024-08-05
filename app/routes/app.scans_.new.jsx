@@ -23,8 +23,7 @@ import {
  import { runScan } from "../models/Scans.server";
  
 export async function loader({ request }) {
-  const { session,admin } = await authenticate.admin(request);
-  const {shop} = session;
+  const { admin } = await authenticate.admin(request);
 
   const response = await admin.graphql(
     `#graphql
@@ -111,34 +110,60 @@ export default function NewScanForm() {
       <Layout>
 
         {/* Is Submitting State */}
-        {isSubmitting ? 
+        {isSubmitting  ? 
+          <Layout.Section>
             <Box width="100%" >
                 <BlockStack gap="500">
-                    <InlineGrid gap="400" columns={3}>
-                        <Card>
-                            <BlockStack inlineAlign="center" gap="400">
-                                <Spinner accessibilityLabel="Spinner example" size="large" />
-                            </BlockStack>
-                        </Card>
-                        <Card>
-                            <BlockStack inlineAlign="center" gap="400">
-                                <Spinner accessibilityLabel="Spinner example" size="large" />
-                            </BlockStack>                </Card>
-                        <Card>
-                            <BlockStack inlineAlign="center" gap="400">
-                                <Spinner accessibilityLabel="Spinner example" size="large" />
-                            </BlockStack>                
-                        </Card>
-                    </InlineGrid>
-                <Card>
-                    <BlockStack inlineAlign="center" gap="400">
-                        <Spinner accessibilityLabel="Spinner example" size="large" />
-                    </BlockStack>  
-                </Card>
-            </BlockStack>
+                        <InlineGrid gap="400" columns={2}>
+                          <Card>
+                            <div style={{width: "100%", height: "150px", display: 'flex',alignItems:'center', justifyContent:'center'}}>
+                              <Spinner accessibilityLabel="Loading Data" size="large" />
+                            </div>
+                          </Card>
+                          <Card>
+                              <div style={{width: "100%", height: "150px", display: 'flex',alignItems:'center', justifyContent:'center'}}>
+                              <Spinner accessibilityLabel="Loading Data" size="large" />
+                            </div>           
+                          </Card>
+                      </InlineGrid>
+                      <InlineGrid gap="400" columns={2}>
+                          <Card>
+                              <div style={{width: "100%", height: "150px", display: 'flex',alignItems:'center', justifyContent:'center'}}>
+                                  <Spinner accessibilityLabel="Loading Data" size="large" />
+                                </div>           
+                          </Card>
+                          <Card>
+                              <div style={{width: "100%", height: "150px", display: 'flex',alignItems:'center', justifyContent:'center'}}>
+                                <Spinner accessibilityLabel="Loading Data" size="large" />
+                              </div>           
+                          </Card>
+                      </InlineGrid>
+                      <InlineGrid gap="400" columns={3}>
+                          <Card>
+                          <div style={{width: "100%", height: "100px", display: 'flex',alignItems:'center', justifyContent:'center'}}>
+                                <Spinner accessibilityLabel="Loading Data" size="large" />
+                              </div>  
+                          </Card>
+                          <Card>
+                              <div style={{width: "100%", height: "100px", display: 'flex',alignItems:'center', justifyContent:'center'}}>
+                              <Spinner accessibilityLabel="Loading Data" size="large" />
+                            </div>           
+                          </Card>
+                          <Card>
+                              <div style={{width: "100%", height: "100px", display: 'flex',alignItems:'center', justifyContent:'center'}}>
+                              <Spinner accessibilityLabel="Loading Data" size="large" />
+                            </div>           
+                          </Card>
+                      </InlineGrid>
+                  <Card>
+                  <div style={{width: "100%", height: "100px", display: 'flex',alignItems:'center', justifyContent:'center'}}>
+                                <Spinner accessibilityLabel="Loading Data" size="large" />
+                              </div> 
+                  </Card>
+              </BlockStack>
 
-          </Box>
-
+            </Box>
+          </Layout.Section>
           :  
         
         <Layout.Section>
