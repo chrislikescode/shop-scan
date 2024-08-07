@@ -35,7 +35,7 @@ We welcome contributions to enhance Shop Scan. To contribute:
 
 ## Support
 
-If you encounter any issues or have questions, please open an issue in this repository or contact our support team at support@shopscan.com.
+If you encounter any issues or have questions, please open an issue in this repository or contact our support team at chris@chrislikescode.com.
 
 ## License
 
@@ -43,8 +43,7 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 
 ## Contact
 
-For more information, visit our website at [Shop Scan](https://www.shopscan.com) or follow us on [Twitter](https://twitter.com/shopscan).
-
+chris@chrislikescode.com 
 ---
 
 Thank you for using Shop Scan! Optimize your Shopify store's performance and enhance your user experience with ease.
