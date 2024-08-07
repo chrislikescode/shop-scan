@@ -1,4 +1,4 @@
-# fly.toml app configuration file generated for google-lighthouse-scanner on 2024-07-29T11:47:40-04:00
+# fly.toml app configuration file generated for shop-scan on 2024-08-05T13:38:33-04:00
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
@@ -7,6 +7,10 @@ app = 'shop-scan'
 primary_region = 'mia'
 
 [build]
+
+[[mounts]]
+  source = 'gls'
+  destination = '/db'
 
 [http_service]
   internal_port = 3000
@@ -20,7 +24,3 @@ primary_region = 'mia'
   memory = '1gb'
   cpu_kind = 'shared'
   cpus = 1
-
-[mounts]
-  source = "gls"
-  destination = "/db"

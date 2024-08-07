@@ -3,7 +3,7 @@
 client_id = "041d4df59e804374540c50ade9268ac8"
 name = "ShopScan"
 handle = "google-shop-scan"
-application_url = "https://google-lighthouse-scanner.fly.dev/
+application_url = "https://shop-scan.fly.dev"
 embedded = true
 
 [build]
@@ -17,9 +17,9 @@ scopes = ""
 
 [auth]
 redirect_urls = [
-  "https://google-lighthouse-scanner.fly.dev/auth/callback",
-  "https://google-lighthouse-scanner.fly.dev/auth/shopify/callback",
-  "https://google-lighthouse-scanner.fly.dev/api/auth/callback"
+  "https://shop-scan.fly.dev/auth/callback",
+  "https://shop-scan.fly.dev/auth/shopify/callback",
+  "https://shop-scan.fly.dev/api/auth/callback"
 ]
 
 [webhooks]

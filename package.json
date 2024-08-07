@@ -1,5 +1,5 @@
 {
-  "name": "google-lighthouse-scanner",
+  "name": "shop-scan",
   "private": true,
   "scripts": {
     "build": "remix vite:build",
