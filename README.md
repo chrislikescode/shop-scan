@@ -1,3 +1,5 @@
+
+![alt text](public/images/LighthouseScannerIcon_200_no_bg.png)
 # Shop Scan
 
 Shop Scan is an embedded Shopify app that allows you to run Google PageSpeed Insights scans directly from your Shopify admin dashboard. Optimize your store's performance effortlessly and improve user experience with detailed insights and recommendations.
