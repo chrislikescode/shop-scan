@@ -22,10 +22,10 @@ export async function loader({ request }) {
   // Billing Require 
   await billing.require({
     plans: [ONE_TIME],
-    isTest: true,
+    isTest: false,
     onFailure: async () => billing.request({ 
       plan: ONE_TIME,
-      isTest: true,
+      isTest: false,
       returnUrl: `https://admin.shopify.com/store/${shopName}/apps/google-shop-scan/app`,
      }),  
   });
